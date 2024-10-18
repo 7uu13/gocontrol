@@ -49,6 +49,7 @@ func AddFile(fileName string) error {
 func saveStagedFiles() error {
 	StagedFilesPath := filepath.Join(RepoPath, "staged_files.json")
 	fmt.Println(StagedFilesPath)
+	fmt.Println(RepoPath)
 
 	file, err := os.Create(StagedFilesPath)
 	if err != nil {
