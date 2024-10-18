@@ -7,19 +7,17 @@ import (
 )
 
 func InitRepo(repoName string) error {
-
-	currentDir, err := os.Getwd()
+	cwd, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("could not get current directory: %w", err)
 	}
-
-	repoPath := filepath.Join(currentDir, repoName)
-
-	fmt.Println(repoPath)
+	fmt.Println(cwd)
 
 	if _, err := os.Stat(repoName); !os.IsNotExist(err) {
 		return fmt.Errorf("repository already initialized")
 	}
+
+	repoPath := filepath.Join(cwd, repoName)
 
 	err = os.Mkdir(repoPath, 0755)
 	if err != nil {

@@ -8,16 +8,29 @@ import (
 	"path/filepath"
 )
 
-var StagedFiles = make(map[string][]byte)
+var (
+	StagedFiles     = make(map[string][]byte)
+	RepoPath        string
+	StagedFilesPath string
+)
 
 func AddFile(fileName string) error {
+	inRepo, repoPath := utils.IsInRepo()
+	if !inRepo {
+		fmt.Println("Error: Not inside a repository")
+		os.Exit(1)
+	}
+
+	RepoPath := repoPath
 	content, err := os.ReadFile(fileName)
 	if err != nil {
 		return fmt.Errorf("error reading file %s: %w", fileName, err)
 	}
 
 	hash := utils.HashFileContent(content)
-	stagingPath := "/home/johan/test/.vcs/staging/"
+	stagingPath := filepath.Join(RepoPath, "staging")
+	fmt.Println(stagingPath)
+
 	stagedFilePath := filepath.Join(stagingPath, hash)
 
 	StagedFiles[hash] = content
@@ -36,8 +49,8 @@ func AddFile(fileName string) error {
 }
 
 func saveStagedFiles() error {
-	stagedFilesPath := "/home/johan/test/.vcs/staged_files.json"
-	file, err := os.Create(stagedFilesPath)
+	StagedFilesPath := filepath.Join(RepoPath, "staged_files.json")
+	file, err := os.Create(StagedFilesPath)
 	if err != nil {
 		return fmt.Errorf("error creating staged files file: %w", err)
 	}
@@ -52,8 +65,7 @@ func saveStagedFiles() error {
 }
 
 func loadStagedFiles() error {
-	stagedFilesPath := "/home/johan/test/.vcs/staged_files.json"
-	file, err := os.Open(stagedFilesPath)
+	file, err := os.Open(StagedFilesPath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil
