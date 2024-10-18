@@ -32,22 +32,13 @@ func InitRepo(repoName string) error {
 		return fmt.Errorf("error creating .vcs directory: %w", err)
 	}
 
-	stagingPath := filepath.Join(vcsPath, "staging")
-	err = os.Mkdir(stagingPath, 0755)
-	if err != nil {
-		return fmt.Errorf("error creating staging directory: %w", err)
-	}
-
-	objectPath := filepath.Join(vcsPath, "objects")
-	err = os.Mkdir(objectPath, 0755)
-	if err != nil {
-		return fmt.Errorf("error creating staging directory: %w", err)
-	}
-
-	commitPath := filepath.Join(vcsPath, "commits")
-	err = os.Mkdir(commitPath, 0755)
-	if err != nil {
-		return fmt.Errorf("error creating staging directory: %w", err)
+	subDirs := []string{"objects", "staging", "commits"}
+	for _, dir := range subDirs {
+		subDirPath := filepath.Join(vcsPath, dir)
+		err := os.Mkdir(subDirPath, 0755)
+		if err != nil {
+			return fmt.Errorf("could not create directory %s: %w", subDirPath, err)
+		}
 	}
 
 	fmt.Printf("Initialized empty repository in %s\n", repoPath)
