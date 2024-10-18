@@ -31,8 +31,15 @@ func main() {
 			os.Exit(1)
 		}
 		fileName := os.Args[2]
-		if err := repo.AddFile(fileName); err != nil {
-			fmt.Println("Error:", err)
+
+		if fileName == "." {
+			if err := repo.AddAllFiles(); err != nil {
+				fmt.Println("Error:", err)
+			}
+		} else {
+			if err := repo.AddFile(fileName); err != nil {
+				fmt.Println("Error:", err)
+			}
 		}
 	// should add -help later on.
 	case "status":
