@@ -41,6 +41,18 @@ func InitRepo(repoName string) error {
 		}
 	}
 
+	headFilePath := filepath.Join(vcsPath, "HEAD")
+	headFile, err := os.Create(headFilePath)
+	if err != nil {
+		return fmt.Errorf("could not create HEAD file: %w", err)
+	}
+	defer headFile.Close()
+
+	_, err = headFile.WriteString("ref: refs/head/master\n")
+	if err != nil {
+		return fmt.Errorf("could not initialize HEAD: %w", err)
+	}
+
 	fmt.Printf("Initialized empty repository in %s\n", repoPath)
 	return nil
 }
