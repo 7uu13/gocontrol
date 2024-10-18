@@ -8,13 +8,12 @@ import (
 
 func InitRepo(repoName string) error {
 
-	homeDir, err := os.UserHomeDir()
+	currentDir, err := os.Getwd()
 	if err != nil {
-		fmt.Println("Error getting home directory:", err)
-		return nil
+		return fmt.Errorf("could not get current directory: %w", err)
 	}
 
-	repoPath := filepath.Join(homeDir, repoName)
+	repoPath := filepath.Join(currentDir, repoName)
 
 	fmt.Println(repoPath)
 
